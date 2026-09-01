@@ -4,26 +4,52 @@ import data from '@/assets/data/iq_test_30_hard_questions.json';
 import QuestionCard from '@/components/question-card';
 import { useState } from 'react';
 //npm start
+const Total_Questions = 10;
 export default function TestPage() {
   const questions = data.questions;
-  function getRandomQuestion(excludeId?: number) {
-    const availableQuestions = questions.filter((q) => q.id !== excludeId);
+  
+  const [usedQuestionIds, setUsedQuestionIds] = useState<number[]>([]);
+  const [questionNumber, setQuestionNumber] = useState(1);
+  const [score, setScore] = useState(0);
+  const [testFinished, setTestFinished] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(() => getRandomQuestion());
+
+
+
+  function getRandomQuestion(excludeIds: number[]=[]) {
+    const availableQuestions = questions.filter((q) => !excludeIds.includes(q.id));
 
     const randomIndex = Math.floor(Math.random() * availableQuestions.length);
     return availableQuestions[randomIndex];
   };
-  const [currentQuestion, setCurrentQuestion] = useState(getRandomQuestion());
+
 
   function handleAnswer(selectedAnswer: string) {
     if (selectedAnswer === currentQuestion.answer) {
-      console.log('Correct :)');
-    } else {
-      console.log('Incorrect :(');
+      setScore((prevScore) => prevScore + 1);
     }
+    const newUsedIds = [...usedQuestionIds, currentQuestion.id];
+    setUsedQuestionIds(newUsedIds);
     // Pick another random question
-    setCurrentQuestion(getRandomQuestion(currentQuestion.id));
+    setCurrentQuestion(getRandomQuestion(newUsedIds));
   }
 
+  if (questionNumber > Total_Questions) {
+    setTestFinished(true);
+    return;
+  } 
+  setQuestionNumber((prevNumber) => prevNumber + 1);
+  setCurrentQuestion(getRandomQuestion(usedQuestionIds));
+  
+  if (testFinished) {
+    return (
+      <ThemedView style={styles.container}>
+        quiz completeo
+        {score}/{Total_Questions}
+      </ThemedView>
+    );
+  }
+  
   return (
     <ThemedView style={styles.container}>
       <QuestionCard 
