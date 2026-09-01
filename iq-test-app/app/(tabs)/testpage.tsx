@@ -3,9 +3,12 @@ import { ThemedView } from '@/components/themed-view';
 import data from '@/assets/data/iq_test_30_hard_questions.json';
 import QuestionCard from '@/components/question-card';
 import { useState } from 'react';
+import {Button} from 'react-native';
+import { useRouter } from 'expo-router'; 
 //npm start
 const Total_Questions = 10;
 export default function TestPage() {
+  const router = useRouter();
   const questions = data.questions;
   
   const [usedQuestionIds, setUsedQuestionIds] = useState<number[]>([]);
@@ -32,21 +35,29 @@ export default function TestPage() {
     setUsedQuestionIds(newUsedIds);
     // Pick another random question
     setCurrentQuestion(getRandomQuestion(newUsedIds));
-  }
-
-  if (questionNumber > Total_Questions) {
+      if (questionNumber > Total_Questions) {
     setTestFinished(true);
     return;
+
   } 
   setQuestionNumber((prevNumber) => prevNumber + 1);
   setCurrentQuestion(getRandomQuestion(usedQuestionIds));
+  }
+
+
   
   if (testFinished) {
     return (
       <ThemedView style={styles.container}>
-        quiz completeo
+        quiz complete 
         {score}/{Total_Questions}
+        <Button
+        title="See How You Did"
+        color="#ffbb00" // Text color on iOS, background color on Android
+        onPress={() =>router.push('/explore')}
+      />
       </ThemedView>
+      
     );
   }
   
@@ -58,6 +69,7 @@ export default function TestPage() {
       >
 
       </QuestionCard>
+      
  
     </ThemedView>
   );
