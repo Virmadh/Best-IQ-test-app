@@ -4,7 +4,8 @@ import data from '@/assets/data/iq_test_30_hard_questions.json';
 import QuestionCard from '@/components/question-card';
 import { useState } from 'react';
 import {Button} from 'react-native';
-import { useRouter } from 'expo-router'; 
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //npm start
 const Total_Questions = 10;
 export default function TestPage() {
@@ -26,7 +27,15 @@ export default function TestPage() {
     return availableQuestions[randomIndex];
   };
 
+  async function saveScore(finalScore: number) {
+    const storedScores = await AsyncStorage.getItem('scoreHistory');
+    const scoreHistory = storedScores ? JSON.parse(storedScores) : [];
+    const newScore = { score: finalScore, total : Total_Questions, date: new Date().toISOString() };
+    const updatedScoreHistory = [...scoreHistory, newScore];
+    await AsyncStorage.setItem('scoreHistory', JSON.stringify(updatedScoreHistory));
 
+  
+  };
   function handleAnswer(selectedAnswer: string) {
     if (selectedAnswer === currentQuestion.answer) {
       setScore((prevScore) => prevScore + 1);
@@ -50,7 +59,6 @@ export default function TestPage() {
     return (
       <ThemedView style={styles.container}>
         quiz complete 
-        {score}/{Total_Questions}
         <Button
         title="See How You Did"
         color="#ffbb00" // Text color on iOS, background color on Android
