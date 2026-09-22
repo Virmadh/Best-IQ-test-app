@@ -36,21 +36,20 @@ export default function TestPage() {
 
   
   };
-  function handleAnswer(selectedAnswer: string) {
-    if (selectedAnswer === currentQuestion.answer) {
-      setScore((prevScore) => prevScore + 1);
-    }
-    const newUsedIds = [...usedQuestionIds, currentQuestion.id];
+  async function handleAnswer(selectedAnswer: string) {
+    const isCorrect = selectedAnswer === currentQuestion.answer;
+    const newScore= score+(isCorrect ? 1: 0);
+    setScore(newScore);
+    const newUsedIds= [...usedQuestionIds, currentQuestion.id];
     setUsedQuestionIds(newUsedIds);
-    // Pick another random question
-    setCurrentQuestion(getRandomQuestion(newUsedIds));
-      if (questionNumber > Total_Questions) {
-    setTestFinished(true);
-    return;
+    if (questionNumber === Total_Questions) {
+      await saveScore(newScore);
+      setTestFinished(true);
+      return;
+    }
 
-  } 
-  setQuestionNumber((prevNumber) => prevNumber + 1);
-  setCurrentQuestion(getRandomQuestion(usedQuestionIds));
+    setQuestionNumber((prevNumber) => prevNumber + 1);
+    setCurrentQuestion(getRandomQuestion(newUsedIds));
   }
 
 
