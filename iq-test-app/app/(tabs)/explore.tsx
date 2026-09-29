@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import { StyleSheet, ScrollView, useWindowDimensions } from 'react-native';
-
+import {Button} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { LineChart } from 'react-native-chart-kit/v2';
 
 import { ThemedText } from '@/components/themed-text';
@@ -34,12 +34,17 @@ export default function ExploreScreen() {
     return iqScores[score] ?? 50; // Default to 50 if score is not in the mapping
   }
 
+
   const [scoreHistory, setScoreHistory] =
     useState<ScoreRecord[]>([]);
 
   const { width } = useWindowDimensions();
 
-
+  async function resetScores() {
+    await AsyncStorage.removeItem('scoreHistory');
+    setScoreHistory([]);
+    router.push('/');
+  }
   useFocusEffect(
     useCallback(() => {
 
@@ -96,6 +101,7 @@ export default function ExploreScreen() {
             </ThemedText>
 
 
+
             <LineChart
               interaction={{ mode: "tap"}}
               tooltip={{shared: false}}
@@ -109,7 +115,7 @@ export default function ExploreScreen() {
               height={700}
 
               yDomain={{
-                min: 70,
+                min: 0,
                 max: 140,
               }}
 
@@ -123,7 +129,7 @@ export default function ExploreScreen() {
           </>
 
         )}
-
+      <Button title="Reset Scores" onPress={resetScores} />
       </ScrollView>
 
     </ThemedView>
