@@ -13,7 +13,7 @@ export default function HomeScreen() {
   const router = useRouter();
   return (
     <ThemedView style={styles.container}>
-    <ThemedText type="title">Welcome Vir!</ThemedText>
+    <ThemedText type="title">Welcome!</ThemedText>
     <HelloWave/>
     <Button
         title="Start IQ Test"
