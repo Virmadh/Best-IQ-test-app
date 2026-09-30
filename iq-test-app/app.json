@@ -42,7 +42,9 @@
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": true,
+      "baseUrl": "/Best-IQ-test-app"
+
     }
   }
 }
